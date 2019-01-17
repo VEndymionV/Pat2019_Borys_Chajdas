@@ -8,10 +8,6 @@ import android.os.Handler;
 
 public class SplashScreenActivity extends Activity {
 
-    private SharedPreferences sharedPreferences;
-
-    private final static long SPLASH_SCREEN_DURATION = 5000L; // 5 seconds
-
     private Handler loginActivityHandler;
 
     private void startLoginActivity(){
@@ -39,7 +35,7 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
 
         if (sharedPreferences.contains("email")) {
             startMainActivity();
@@ -51,7 +47,7 @@ public class SplashScreenActivity extends Activity {
                 public void run() {
                     startLoginActivity();
                 }
-            }, SPLASH_SCREEN_DURATION);
+            }, Config.SPLASH_SCREEN_DURATION);
         }
     }
 }
