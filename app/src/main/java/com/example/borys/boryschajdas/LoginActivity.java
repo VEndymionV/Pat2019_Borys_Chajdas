@@ -30,18 +30,15 @@ public class LoginActivity extends Activity {
 
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
 
-        preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGEDIN, true);
+        preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGED_IN, true);
 
         if(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked()){
             preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_EMAIL, emailInput.getText().toString());
             preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, passwordInput.getText().toString());
             preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, true);
         }
-        // TODO to nie powinno być konieczne, bo w MainActivity już czyszczę ale bez tego nie działa
         else{
             preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false);
-//            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_PASSWORD);
-//            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA);
         }
 
         preferencesEditor.apply();

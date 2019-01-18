@@ -36,7 +36,7 @@ public class SplashScreenActivity extends Activity {
 
         SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
 
-        if (sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGEDIN, false)) {
+        if (sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGED_IN, false)) {
             startMainActivity();
         } else {
             loginActivityHandler = new Handler();

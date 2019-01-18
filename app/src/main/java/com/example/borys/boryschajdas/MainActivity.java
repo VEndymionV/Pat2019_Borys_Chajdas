@@ -22,6 +22,7 @@ public class MainActivity extends Activity {
             clearUserSharedPreferences(false);
         else
             clearUserSharedPreferences(true);
+
         startLoginActivity();
     }
 
@@ -37,10 +38,12 @@ public class MainActivity extends Activity {
     private void clearUserSharedPreferences(boolean rememberData){
 
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
+
         if(rememberData)
-            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGEDIN, false);
+            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGED_IN, false);
         else
             preferencesEditor.clear();
+
         preferencesEditor.apply();
     }
 
