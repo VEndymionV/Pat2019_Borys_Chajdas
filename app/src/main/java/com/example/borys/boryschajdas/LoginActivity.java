@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,14 +29,17 @@ public class LoginActivity extends Activity {
     private void saveLoginDataInSharedPreferences(){
 
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-        preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_EMAIL, emailInput.getText().toString());
+
+        preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGEDIN, true);
 
         if(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked()){
+            preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_EMAIL, emailInput.getText().toString());
             preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, passwordInput.getText().toString());
             preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, true);
         }
         // TODO to nie powinno być konieczne, bo w MainActivity już czyszczę ale bez tego nie działa
         else{
+            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false);
 //            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_PASSWORD);
 //            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA);
         }
@@ -95,7 +97,7 @@ public class LoginActivity extends Activity {
 
         sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
 
-        if(sharedPreferences.contains(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA)){
+        if(sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false)){
             emailInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_EMAIL, ""));
             passwordInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, ""));
         }

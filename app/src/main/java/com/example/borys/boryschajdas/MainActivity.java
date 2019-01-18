@@ -17,26 +17,35 @@ public class MainActivity extends Activity {
     }
 
     public void logOut(View view){
-        if(!sharedPreferences.contains(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA))
-            clearUserSharedPreferences();
+
+        if(!sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false))
+            clearUserSharedPreferences(false);
+        else
+            clearUserSharedPreferences(true);
         startLoginActivity();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
     }
 
-    private void clearUserSharedPreferences(){
+    private void clearUserSharedPreferences(boolean rememberData){
+
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-        preferencesEditor.clear();
+        if(rememberData)
+            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGEDIN, false);
+        else
+            preferencesEditor.clear();
         preferencesEditor.apply();
     }
 
     private void startLoginActivity(){
+
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

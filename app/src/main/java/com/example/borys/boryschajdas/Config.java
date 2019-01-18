@@ -1,6 +1,6 @@
 package com.example.borys.boryschajdas;
 
-public class Config {
+class Config {
 
     public final static long SPLASH_SCREEN_DURATION = 5000L; // 5 seconds
 
