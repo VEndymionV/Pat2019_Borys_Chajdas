@@ -31,6 +31,7 @@
                 android:layout_height="117dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
+                android:contentDescription="@string/login_logo"
                 android:src="@drawable/android_robot" />
 
             <TextView
@@ -38,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="35dp"
-                android:text="Zaloguj się aby kontynuować"
+                android:text="@string/login_prompt"
                 android:textAlignment="center"
                 android:textSize="18sp" />
 
@@ -47,9 +48,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Adres email"
+                android:hint="@string/email_address"
                 android:inputType="textEmailAddress"
-                android:paddingBottom="20dp" />
+                android:paddingBottom="20dp"
+                android:autofillHints="" />
 
             <EditText
                 android:id="@+id/password_input"
@@ -59,7 +61,7 @@
                 android:layout_marginBottom="10dp"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="Hasło"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:paddingBottom="20dp" />
 
@@ -73,15 +75,16 @@
                     android:id="@+id/rememberUser_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="10dp"
-                    android:text="Zapamiętaj" />
+                    android:paddingStart="0dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/remember" />
 
                 <Button
                     android:id="@+id/login_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="logIn"
-                    android:text="Zaloguj się" />
+                    android:text="@string/login" />
             </LinearLayout>
 
         </LinearLayout>

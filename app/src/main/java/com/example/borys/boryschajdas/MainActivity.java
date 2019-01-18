@@ -12,13 +12,12 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        // Return to home menu
+
         moveTaskToBack(true);
     }
 
-    // logout button onClick()
     public void logOut(View view){
-        if(!sharedPreferences.contains("remember"))
+        if(!sharedPreferences.contains(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA))
             clearUserSharedPreferences();
         startLoginActivity();
     }
@@ -28,7 +27,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
     }
 
     private void clearUserSharedPreferences(){

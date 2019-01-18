@@ -11,36 +11,34 @@ public class SplashScreenActivity extends Activity {
     private Handler loginActivityHandler;
 
     private void startLoginActivity(){
-        // Run LoginActivity
+
         startActivity(new Intent(this, LoginActivity.class));
-        // Finish this activity
         finish();
     }
 
     private void startMainActivity(){
-        // Run LoginActivity
+
         startActivity(new Intent(this, MainActivity.class));
-        // Finish this activity
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        // Stop the MainActivity launch
+
         loginActivityHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
 
-        if (sharedPreferences.contains("email")) {
+        if (sharedPreferences.contains(Config.SHARED_PREFERENCES_FIELD_EMAIL)) {
             startMainActivity();
         } else {
-            // Wait x seconds then run startLoginActivity() method
             loginActivityHandler = new Handler();
             loginActivityHandler.postDelayed(new Runnable() {
                 @Override

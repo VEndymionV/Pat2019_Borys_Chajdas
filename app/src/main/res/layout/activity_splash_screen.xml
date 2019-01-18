@@ -9,7 +9,7 @@
     tools:context=".SplashScreenActivity">
 
     <ImageView
-        android:id="@+id/splashScreenImage"
+        android:id="@+id/splashScreen_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/splashScreenImage"

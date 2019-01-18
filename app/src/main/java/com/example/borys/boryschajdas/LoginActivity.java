@@ -17,26 +17,50 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+
         moveTaskToBack(true);
+    }
+
+    private void startMainActivity(){
+
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
+    private void saveLoginDataInSharedPreferences(){
+
+        SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
+        preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_EMAIL, emailInput.getText().toString());
+
+        if(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked()){
+            preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, passwordInput.getText().toString());
+            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, true);
+        }
+        // TODO to nie powinno być konieczne, bo w MainActivity już czyszczę ale bez tego nie działa
+        else{
+//            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_PASSWORD);
+//            preferencesEditor.remove(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA);
+        }
+
+        preferencesEditor.apply();
     }
 
     private boolean validateEmail(String email){
 
-        return(email.length() > 5 && email.matches(Config.REGEX_EMAIL_VALIDATION));
+        return(email.length() >= 5 && email.matches(Config.REGEX_EMAIL_VALIDATION));
     }
 
     private boolean validatePassword(String password){
 
-        return(password.length() >= 8);
+        return(password.length() >= Config.PASSWORD_LENGTH && password.matches(Config.REGEX_PASSWORD_VALIDATION));
     }
 
     public void logIn(View view){
 
         boolean emailIsCorrect, passwordIsCorrect;
 
-        // Walidacja adresu e-mail, jeżeli jest niepoprawny zostaje wyświetlona informacja
         if(!validateEmail(emailInput.getText().toString())){
-            emailInput.setError("Niepoprawny adres email");
+            emailInput.setError(getString(R.string.bad_email_error));
             emailIsCorrect = false;
         }
         else{
@@ -44,9 +68,8 @@ public class LoginActivity extends Activity {
             emailIsCorrect = true;
         }
 
-        // Walidacja hasła, jeżeli jest niepoprawne zostaje wyświetlona informacja
         if(!validatePassword(passwordInput.getText().toString())){
-            passwordInput.setError("Niepoprawne hasło");
+            passwordInput.setError(getString(R.string.bad_password_error));
             passwordIsCorrect = false;
         }
         else{
@@ -56,40 +79,25 @@ public class LoginActivity extends Activity {
 
         if(emailIsCorrect && passwordIsCorrect){
 
-            SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-            preferencesEditor.putString("email", emailInput.getText().toString());
-
-            if(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked()){
-                preferencesEditor.putString("password", passwordInput.getText().toString());
-                preferencesEditor.putBoolean("remember", true);
-                Log.d("UWAAAAAAGA", "TAAAAK");
-            }
-            // TODO to nie powinno być konieczne, bo w MainActivity już czyszczę ale bez tego nie działa
-            else{
-                preferencesEditor.remove("password");
-                preferencesEditor.remove("remember");
-            }
-
-            preferencesEditor.apply();
-
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            saveLoginDataInSharedPreferences();
+            startMainActivity();
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
 
-        sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
 
-        if(sharedPreferences.contains("remember")){
-            emailInput.setText(sharedPreferences.getString("email", ""));
-            passwordInput.setText(sharedPreferences.getString("password", ""));
+        if(sharedPreferences.contains(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA)){
+            emailInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_EMAIL, ""));
+            passwordInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, ""));
         }
     }
 }

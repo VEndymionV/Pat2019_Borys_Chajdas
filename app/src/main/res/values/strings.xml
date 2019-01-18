@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Borys.Chajdas</string>
     <string name="splashScreenImage">Splash Screen image</string>
+    <string name="login_prompt">Zaloguj się aby kontynuować</string>
+    <string name="password">Hasło</string>
+    <string name="remember">Zapamiętaj</string>
+    <string name="login">Zaloguj się</string>
+    <string name="email_address">Adres email</string>
+    <string name="login_logo">Login logo</string>
+    <string name="logout">Wyloguj</string>
+    <string name="logged_in">Zalogowany</string>
+    <string name="bad_email_error">Niepoprawny adres email</string>
+    <string name="bad_password_error">Niepoprawne hasło</string>
 </resources>
