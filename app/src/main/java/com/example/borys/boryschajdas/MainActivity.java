@@ -8,7 +8,7 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 
-    private SharedPreferences sharedPreferences;
+    private User user;
 
     @Override
     public void onBackPressed() {
@@ -18,11 +18,7 @@ public class MainActivity extends Activity {
 
     public void logOut(View view){
 
-        if(!sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false))
-            clearUserSharedPreferences(false);
-        else
-            clearUserSharedPreferences(true);
-
+        user.logOut();
         startLoginActivity();
     }
 
@@ -32,19 +28,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
-    }
-
-    private void clearUserSharedPreferences(boolean rememberData){
-
-        SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-
-        if(rememberData)
-            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGED_IN, false);
-        else
-            preferencesEditor.clear();
-
-        preferencesEditor.apply();
+        user = new User(getSharedPreferences(User.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE));
     }
 
     private void startLoginActivity(){

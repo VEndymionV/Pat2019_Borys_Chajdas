@@ -4,15 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class LoginActivity extends Activity {
 
-    private SharedPreferences sharedPreferences;
     private EditText emailInput;
     private EditText passwordInput;
+
+    private User user;
 
     @Override
     public void onBackPressed() {
@@ -26,59 +28,28 @@ public class LoginActivity extends Activity {
         finish();
     }
 
-    private void saveLoginDataInSharedPreferences(){
-
-        SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-
-        preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_LOGGED_IN, true);
-
-        if(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked()){
-            preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_EMAIL, emailInput.getText().toString());
-            preferencesEditor.putString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, passwordInput.getText().toString());
-            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, true);
-        }
-        else{
-            preferencesEditor.putBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false);
-        }
-
-        preferencesEditor.apply();
-    }
-
-    private boolean validateEmail(String email){
-
-        return(email.length() >= 5 && email.matches(Config.REGEX_EMAIL_VALIDATION));
-    }
-
-    private boolean validatePassword(String password){
-
-        return(password.length() >= Config.PASSWORD_LENGTH && password.matches(Config.REGEX_PASSWORD_VALIDATION));
-    }
-
     public void logIn(View view){
 
-        boolean emailIsCorrect, passwordIsCorrect;
+        Validator fieldValidator = new Validator(emailInput.getText().toString(), passwordInput.getText().toString());
 
-        if(!validateEmail(emailInput.getText().toString())){
-            emailInput.setError(getString(R.string.bad_email_error));
-            emailIsCorrect = false;
-        }
-        else{
+        if(fieldValidator.getEmailValidationState()){
             emailInput.setError(null);
-            emailIsCorrect = true;
-        }
-
-        if(!validatePassword(passwordInput.getText().toString())){
-            passwordInput.setError(getString(R.string.bad_password_error));
-            passwordIsCorrect = false;
         }
         else{
-            passwordInput.setError(null);
-            passwordIsCorrect = true;
+            emailInput.setError(getString(R.string.bad_email_error));
         }
 
-        if(emailIsCorrect && passwordIsCorrect){
+        if(fieldValidator.getPasswordValidationState()){
+            passwordInput.setError(null);
+        }
+        else{
+            passwordInput.setError(getString(R.string.bad_password_error));
+        }
 
-            saveLoginDataInSharedPreferences();
+        if(fieldValidator.getValidationState()){
+
+            user.logIn(emailInput.getText().toString(), passwordInput.getText().toString());
+            user.setRememberUser(((CheckBox)findViewById(R.id.rememberUser_checkbox)).isChecked());
             startMainActivity();
         }
     }
@@ -89,14 +60,14 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        user = new User(getSharedPreferences(User.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE));
+
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
 
-        sharedPreferences = getSharedPreferences(Config.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE);
-
-        if(sharedPreferences.getBoolean(Config.SHARED_PREFERENCES_FIELD_REMEMBER_USER_DATA, false)){
-            emailInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_EMAIL, ""));
-            passwordInput.setText(sharedPreferences.getString(Config.SHARED_PREFERENCES_FIELD_PASSWORD, ""));
+        if(user.getRememberUser()){
+            emailInput.setText(user.getEmail());
+            passwordInput.setText(user.getPassword());
         }
     }
 }
