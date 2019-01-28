@@ -14,14 +14,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
 
     private fun MutableList<Photo>.replaceAllItems(newItems: List<Photo>){
 
-        for(i in newItems.indices){
-            if(i < this.size){
-                this[i] = newItems[i]
-            }
-            else{
-                this.add(newItems[i])
-            }
-        }
+        this.clear()
+        this.addAll(newItems)
     }
 
     private val photoItems = mutableListOf<Photo>()
