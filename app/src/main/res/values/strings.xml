@@ -11,4 +11,5 @@
     <string name="logged_in">Zalogowany</string>
     <string name="bad_email_error">Niepoprawny adres email</string>
     <string name="bad_password_error">Niepoprawne hasło</string>
+    <string name="connection_error_message">Nie udało się pobrać danych z serwera. Aby spróbować ponownie pociągnij od góry.</string>
 </resources>

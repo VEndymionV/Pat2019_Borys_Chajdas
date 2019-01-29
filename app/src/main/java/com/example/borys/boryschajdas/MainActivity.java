@@ -3,18 +3,14 @@ package com.example.borys.boryschajdas;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.internal.EverythingIsNonNull;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -24,7 +20,9 @@ public class MainActivity extends Activity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout mainLayout;
+
+    private DataRetrieval dataRetrieval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +32,35 @@ public class MainActivity extends Activity {
 
         recyclerView = findViewById(R.id.recyclerView);
         progressBar = findViewById(R.id.photosLoading_progressBar);
-        refreshLayout = findViewById(R.id.swiperefresh); // TODO rename
-
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getPhotosFromHttp();
-            }
-        });
+        mainLayout = findViewById(R.id.mainLayout);
 
         user = new User(getSharedPreferences(User.SHARED_PREFERENCES_USER_DATA, MODE_PRIVATE));
 
-        setupRecyclerView();
-        getPhotosFromHttp();
-    }
+        dataRetrieval = new DataRetrieval(new OnCustomEventListener() {
+            @Override
+            public void onEvent(List<Photo> photos) {
+                photoAdapter.updateItems(photos);
+                progressBar.setVisibility(View.GONE);
+                mainLayout.setRefreshing(false);
+            }
 
+            @Override
+            public void onFailure() {
+                mainLayout.setRefreshing(false);
+                Toast.makeText(getApplicationContext(), R.string.connection_error_message, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        setupRecyclerView();
+        dataRetrieval.getPhotosFromHttp();
+
+        mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                dataRetrieval.getPhotosFromHttp();
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {
@@ -70,38 +82,12 @@ public class MainActivity extends Activity {
 
     private void setupRecyclerView(){
 
-        if(photoAdapter == null)
+        if(photoAdapter == null) {
             photoAdapter = new PhotoAdapter();
+        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(photoAdapter);
-    }
-
-    private void getPhotosFromHttp(){
-
-        DataRetrievalKt.getPhotosService().photoObject().enqueue(new Callback<PhotoObject>() {
-            @Override
-            @EverythingIsNonNull
-            public void onResponse(Call<PhotoObject> call, Response<PhotoObject> response) {
-
-                PhotoObject photoObject = response.body();
-
-                if(photoObject != null){
-                    photoAdapter.updateItems(photoObject.getArray());
-                }
-
-                progressBar.setVisibility(View.GONE);
-                refreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            @EverythingIsNonNull
-            public void onFailure(Call<PhotoObject> call, Throwable t) {
-
-                Log.e("photosService", t.getLocalizedMessage());
-                refreshLayout.setRefreshing(false);
-            }
-        });
     }
 }
